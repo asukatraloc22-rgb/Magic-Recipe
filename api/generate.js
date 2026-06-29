@@ -12,9 +12,14 @@ export default async function handler(req, res) {
         return res.status(500).json({ error: 'Clé API manquante dans Vercel' });
     }
 
+    // Si l'utilisateur n'a rien mis dans "envie", on donne une consigne par défaut
+    const envieInstruction = envie 
+        ? `Le contexte ou l'envie particulière est : "${envie}". Adapte la recette en fonction.` 
+        : `L'utilisateur n'a pas précisé d'envie. Donne-lui la meilleure version authentique et classique de ce plat.`;
+
     const prompt = `Tu es un chef cuisinier expert et artisanal. 
-    L'utilisateur a ces ingrédients ou idées : "${title}". 
-    Il a cette envie : "${envie}".
+    L'utilisateur te demande une recette pour : "${title}". 
+    ${envieInstruction}
     
     Crée une recette sur-mesure fantastique.
     Tu DOIS répondre UNIQUEMENT avec un objet JSON valide (sans aucun autre texte, sans markdown). 
