@@ -1,0 +1,114 @@
+/* DESIGN SYSTEM & VARIABLES */
+:root {
+    --color-farine: #F9F6F0;
+    --color-sauge: #2A3A35;
+    --color-croute: #EAE3D9;
+    --color-cuivre: #D48A55;
+    --color-sumac: #963827;
+    --color-text-light: #5A6B65;
+    
+    --font-display: 'Fraunces', Georgia, serif;
+    --font-body: 'Alegreya Sans', sans-serif;
+    --font-ui: 'Space Mono', monospace;
+    
+    --transition-smooth: all 0.3s ease;
+}
+
+/* RESET & ACCESSIBILITÉ */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-body);
+    font-size: 1.15rem;
+    line-height: 1.5;
+    color: var(--color-sauge);
+    background-color: var(--color-farine);
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.025'/%3E%3C/svg%3E");
+}
+
+h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; line-height: 1.2; }
+a, button { cursor: pointer; color: inherit; text-decoration: none; }
+img { max-width: 100%; display: block; height: auto; }
+
+/* LAYOUT (RESPONSIVE) */
+.app-container { display: flex; flex-direction: column; min-height: 100vh; }
+
+.main-header {
+    background-color: var(--color-croute);
+    border-bottom: 3px solid var(--color-cuivre);
+    padding: 1rem 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo { font-family: var(--font-display); font-size: 1.8rem; font-weight: 700; }
+.logo span { color: var(--color-cuivre); }
+
+.main-nav ul { display: flex; list-style: none; gap: 1.5rem; }
+.nav-link { font-family: var(--font-ui); font-size: 0.9rem; text-transform: uppercase; padding: 0.5rem 1rem; border-radius: 4px; transition: var(--transition-smooth); }
+.nav-link:hover, .nav-link.active { background-color: var(--color-sauge); color: var(--color-farine); }
+
+.main-content { flex: 1; max-width: 1400px; width: 100%; margin: 0 auto; padding: 2rem; }
+.section-panel { margin-bottom: 4rem; }
+.section-title { font-size: 2.5rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--color-croute); padding-bottom: 0.5rem; }
+
+/* FORMULAIRE (Nouvelle création) */
+.creation-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; background: var(--color-croute); padding: 2.5rem; border-radius: 4px; position: relative; }
+.creation-grid::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background-color: var(--color-cuivre); border-radius: 4px 4px 0 0; }
+.form-group { margin-bottom: 1.5rem; }
+.form-group label { display: block; font-family: var(--font-ui); font-size: 0.85rem; text-transform: uppercase; margin-bottom: 0.5rem; }
+.form-control { width: 100%; padding: 0.8rem 1rem; font-family: var(--font-body); font-size: 1.1rem; background-color: var(--color-farine); border: 1px solid rgba(42, 58, 53, 0.2); border-radius: 4px; transition: var(--transition-smooth); }
+.form-control:focus { outline: none; border-color: var(--color-cuivre); box-shadow: 0 0 0 3px rgba(212, 138, 85, 0.15); }
+
+/* BOUTONS */
+.btn { display: inline-flex; align-items: center; justify-content: center; font-family: var(--font-ui); text-transform: uppercase; font-size: 0.9rem; padding: 0.8rem 2rem; border: none; border-radius: 4px; transition: var(--transition-smooth); font-weight: bold; }
+.btn-primary { background-color: var(--color-cuivre); color: var(--color-farine); }
+.btn-primary:hover { background-color: #be7543; transform: translateY(-1px); }
+.btn-secondary { background-color: transparent; border: 2px solid var(--color-sauge); color: var(--color-sauge); }
+.btn-secondary:hover { background-color: var(--color-sauge); color: var(--color-farine); }
+
+/* ONGLETS DU CATALOGUE */
+.catalog-tabs { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2rem; border-bottom: 2px solid var(--color-croute); padding-bottom: 0.75rem; }
+.tab-button { font-family: var(--font-body); font-size: 1.2rem; padding: 0.4rem 1.2rem; background: transparent; border: none; border-radius: 20px; transition: var(--transition-smooth); }
+.tab-button:hover { background-color: var(--color-croute); }
+.tab-button.active { background-color: var(--color-sumac); color: var(--color-farine); }
+
+/* GRILLE & CARTES DE RECETTES */
+.recipe-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 2.5rem; }
+.recipe-card { background-color: var(--color-croute); border-radius: 4px; overflow: hidden; position: relative; display: flex; flex-direction: column; box-shadow: 0 4px 15px rgba(0,0,0,0.01); transition: var(--transition-smooth); }
+.recipe-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background-color: var(--color-cuivre); z-index: 2; }
+.recipe-card:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(42, 58, 53, 0.06); }
+.recipe-image-wrapper { position: relative; height: 220px; background-color: #dfd7cc; overflow: hidden; }
+.recipe-image-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-style: italic; color: var(--color-text-light); background: linear-gradient(135deg, var(--color-croute) 0%, #dcd3c5 100%); }
+.recipe-badge { position: absolute; bottom: 1rem; left: 1rem; background-color: var(--color-farine); padding: 0.2rem 0.6rem; font-family: var(--font-ui); font-size: 0.75rem; text-transform: uppercase; border-radius: 2px; }
+.recipe-fav-btn { position: absolute; top: 1rem; right: 1rem; background: var(--color-farine); border: none; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--color-sumac); box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: var(--transition-smooth); z-index: 3; }
+.recipe-fav-btn:hover, .recipe-fav-btn.active { transform: scale(1.1); background-color: var(--color-sumac); color: var(--color-farine); }
+.recipe-content { padding: 1.5rem; display: flex; flex-direction: column; flex-grow: 1; }
+.recipe-meta { font-family: var(--font-ui); font-size: 0.8rem; color: var(--color-text-light); margin-bottom: 0.5rem; text-transform: uppercase; }
+.recipe-name { font-size: 1.6rem; margin-bottom: 0.75rem; color: var(--color-sauge); }
+.recipe-desc { font-size: 1.05rem; color: var(--color-text-light); margin-bottom: 1.5rem; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.recipe-footer { margin-top: auto; display: flex; justify-content: space-between; align-items: center; font-family: var(--font-ui); font-size: 0.85rem; }
+.recipe-tag { color: var(--color-cuivre); font-weight: bold; }
+
+/* MEDIA QUERIES */
+@media (max-width: 900px) { .creation-grid { grid-template-columns: 1fr; } }
+@media (max-width: 650px) {
+    .header-content { flex-direction: column; gap: 1rem; }
+    .main-nav ul { gap: 0.5rem; flex-wrap: wrap; justify-content: center; }
+    .nav-link { padding: 0.4rem 0.6rem; font-size: 0.8rem; }
+    .main-content { padding: 1rem; }
+    .section-title { font-size: 2rem; }
+}
