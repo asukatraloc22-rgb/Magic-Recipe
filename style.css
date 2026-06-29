@@ -127,3 +127,41 @@ img { max-width: 100%; display: block; height: auto; }
 @media (max-width: 650px) {
     .guide-card { padding: 1.5rem; }
 }
+
+/* -------------------------------------------------------------------------
+   COMPOSANT : DÉTAILS DE LA RECETTE
+   ------------------------------------------------------------------------- */
+#detail-content::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background-color: var(--color-cuivre);
+    border-radius: 4px 4px 0 0;
+}
+
+.detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 3rem;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(42, 58, 53, 0.1);
+}
+
+.detail-ingredients ul {
+    list-style-type: square;
+    padding-left: 1.2rem;
+    color: var(--color-text-light);
+    line-height: 1.8;
+}
+
+.detail-instructions p {
+    color: var(--color-text-light);
+    line-height: 1.8;
+    margin-bottom: 1rem;
+}
+
+@media (max-width: 768px) {
+    .detail-grid { grid-template-columns: 1fr; gap: 2rem; }
+}
