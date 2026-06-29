@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Magic Recipe — Votre Carnet de Cuisine Artisanal</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Alegreya+Sans:ital,wght@0,300;0,400;0,700;1,400&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;1,9..144,400&family=Space+Mono&display=swap" rel="stylesheet">
+
+    <style>
+        /* -------------------------------------------------------------------------
+           DESIGN SYSTEM & VARIABLES (Cuisine de Campagne & Épices)
+           ------------------------------------------------------------------------- */
+        :root {
+            --color-farine: #F9F6F0;       /* Fond principal (blanc chaud) */
+            --color-sauge: #2A3A35;        /* Texte principal & Titres (Élégance naturelle) */
+            --color-croute: #EAE3D9;       /* Fond secondaire (Fiches & Menus) */
+            --color-cuivre: #D48A55;       /* Action primaire (Boutons, liserés signature) */
+            --color-sumac: #963827;        /* Accentuation (Favoris, alertes) */
+            --color-text-light: #5A6B65;   /* Texte secondaire */
+            
+            --font-display: 'Fraunces', Georgia, serif;
+            --font-body: 'Alegreya Sans', sans-serif;
+            --font-ui: 'Space Mono', monospace;
+            
+            --transition-smooth: all 0.3s ease;
+        }
+
+        /* -------------------------------------------------------------------------
+           RESET & ACCESSIBILITÉ
+           ------------------------------------------------------------------------- */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-body);
+            font-size: 1.15rem;
+            line-height: 1.5;
+            color: var(--color-sauge);
+            background-color: var(--color-farine);
+            /* ÉLÉMENT SIGNATURE : Incrustation d'un grain très fin façon papier artisanal */
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.025'/%3E%3C/svg%3E");
+        }
+
+        h1, h2, h3, h4 {
+            font-family: var(--font-display);
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        a, button {
+            cursor: pointer;
+            color: inherit;
+            text-decoration: none;
+        }
+
+        img {
+            max-width: 100%;
+            display: block;
+            height: auto;
+        }
+
+        /* Lecteurs d'écran (Accessibilité) */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+
+        /* -------------------------------------------------------------------------
+           STRUCTURE ET LAYOUT (RESPONSIVE)
+           ------------------------------------------------------------------------- */
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Barre de navigation supérieure */
+        .main-header {
+            background-color: var(--color-croute);
+            border-bottom: 3px solid var(--color-cuivre); /* Liseré signature */
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: var(--font-display);
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--color-sauge);
+        }
+
+        .logo span {
+            color: var(--color-cuivre);
+        }
+
+        .main-nav ul {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+        }
+
+        .nav-link {
+            font-family: var(--font-ui);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: var(--transition-smooth);
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background-color: var(--color-sauge);
+            color: var(--color-farine);
+        }
+
+        /* Zone de contenu principale */
+        .main-content {
+            flex: 1;
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .section-panel {
+            margin-bottom: 4rem;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--color-croute);
+            padding-bottom: 0.5rem;
+        }
+
+        /* -------------------------------------------------------------------------
+           COMPOSANT : FORMULAIRE (Nouvelle création)
+           ------------------------------------------------------------------------- */
+        .creation-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            background: var(--color-croute);
+            padding: 2.5rem;
+            border-radius: 4px;
+            position: relative;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+        }
+
+        /* ÉLÉMENT SIGNATURE : Le liseré supérieur cuivré sur la fiche formulaire */
+        .creation-grid::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background-color: var(--color-cuivre);
+            border-radius: 4px 4px 0 0;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-family: var(--font-ui);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            font-family: var(--font-body);
+            font-size: 1.1rem;
+            background-color: var(--color-farine);
+            border: 1px solid rgba(42, 58, 53, 0.2);
+            color: var(--color-sauge);
+            border-radius: 4px;
+            transition: var(--transition-smooth);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--color-cuivre);
+            box-shadow: 0 0 0 3px rgba(212, 138, 85, 0.15);
+        }
+
+        /* Boutons artisanaux */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-ui);
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            padding: 0.8rem 2rem;
+            border: none;
+            border-radius: 4px;
+            transition: var(--transition-smooth);
+            font-weight: bold;
+        }
+
+        .btn-primary {
+            background-color: var(--color-cuivre);
+            color: var(--color-farine);
+        }
+
+        .btn-primary:hover {
+            background-color: #be7543;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            border: 2px solid var(--color-sauge);
+            color: var(--color-sauge);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--color-sauge);
+            color: var(--color-farine);
+        }
+
+        /* -------------------------------------------------------------------------
+           COMPOSANT : LES SUB-TABS (Onglets du Catalogue)
+           ------------------------------------------------------------------------- */
+        .catalog-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid var(--color-croute);
+            padding-bottom: 0.75rem;
+        }
+
+        .tab-button {
+            font-family: var(--font-body);
+            font-size: 1.2rem;
+            padding: 0.4rem 1.2rem;
+            background: transparent;
+            border: none;
+            border-radius: 20px;
+            transition: var(--transition-smooth);
+        }
+
+        .tab-button:hover {
+            background-color: var(--color-croute);
+        }
+
+        .tab-button.active {
+            background-color: var(--color-sumac);
+            color: var(--color-farine);
+        }
+
+        /* -------------------------------------------------------------------------
+           COMPOSANT : GRILLE DE RECETTES (Cartes)
+           ------------------------------------------------------------------------- */
+        .recipe-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .recipe-card {
+            background-color: var(--color-croute);
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.01);
+            transition: var(--transition-smooth);
+        }
+
+        /* ÉLÉMENT SIGNATURE : Le liseré supérieur cuivré sur chaque fiche recette */
+        .recipe-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background-color: var(--color-cuivre);
+            z-index: 2;
+        }
+
+        .recipe-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(42, 58, 53, 0.06);
+        }
+
+        .recipe-image-wrapper {
+            position: relative;
+            height: 220px;
+            background-color: #dfd7cc; /* Fallback de couleur chaude pour les images */
+            overflow: hidden;
+        }
+
+        /* Effet d'illustration stylisée / placeholder */
+        .recipe-image-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-display);
+            font-style: italic;
+            color: var(--color-text-light);
+            background: linear-gradient(135deg, var(--color-croute) 0%, #dcd3c5 100%);
+        }
+
+        .recipe-badge {
+            position: absolute;
+            bottom: 1rem;
+            left: 1rem;
+            background-color: var(--color-farine);
+            padding: 0.2rem 0.6rem;
+            font-family: var(--font-ui);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            border-radius: 2px;
+            letter-spacing: 1px;
+        }
+
+        .recipe-fav-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--color-farine);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-sumac);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: var(--transition-smooth);
+            z-index: 3;
+        }
+
+        .recipe-fav-btn:hover {
+            transform: scale(1.1);
+            background-color: var(--color-sumac);
+            color: var(--color-farine);
+        }
+
+        .recipe-content {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .recipe-meta {
+            font-family: var(--font-ui);
+            font-size: 0.8rem;
+            color: var(--color-text-light);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+        }
+
+        .recipe-name {
+            font-size: 1.6rem;
+            margin-bottom: 0.75rem;
+            color: var(--color-sauge);
+        }
+
+        .recipe-desc {
+            font-size: 1.05rem;
+            color: var(--color-text-light);
+            margin-bottom: 1.5rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .recipe-footer {
+            margin-top: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: var(--font-ui);
+            font-size: 0.85rem;
+        }
+
+        .recipe-tag {
+            color: var(--color-cuivre);
+            font-weight: bold;
+        }
+
+        /* -------------------------------------------------------------------------
+           RESPONSIVE DESIGN (MEDIA QUERIES)
+           ------------------------------------------------------------------------- */
+        @media (max-width: 900px) {
+            .creation-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 650px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            .main-nav ul {
+                gap: 0.5rem;
+            }
+            .nav-link {
+                padding: 0.4rem 0.6rem;
+                font-size: 0.8rem;
+            }
+            .main-content {
+                padding: 1rem;
+            }
+            .section-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+
+        <header class="main-header">
+            <div class="header-content">
+                <div class="logo">Magic <span>recipe</span></div>
+                <nav class="main-nav" aria-label="Navigation principale">
+                    <ul>
+                        <li><a href="#creation" class="nav-link active">Nouvelle création</a></li>
+                        <li><a href="#mes-recettes" class="nav-link">Mes recettes</a></li>
+                        <li><a href="#catalogues" class="nav-link">Catalogues</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </header>
+
+        <main class="main-content">
+
+            <section id="creation" class="section-panel">
+                <h2 class="section-title">Nouvelle création</h2>
+                <div class="creation-grid">
+                    <div class="form-side">
+                        <form action="#" method="POST" onsubmit="event.preventDefault();">
+                            <div class="form-group">
+                                <label for="recipe-title">Nom de l'idée ou Ingrédients dispos</label>
+                                <input type="text" id="recipe-title" class="form-control" placeholder="Ex: Restes de poulet, crème fraîche, fond de placard...">
+                            </div>
+                            <div class="form-group">
+                                <label for="recipe-envie">De quoi avez-vous envie ?</label>
+                                <textarea id="recipe-envie" class="form-control" rows="4" placeholder="Ex: Un plat réconfortant d'hiver, rapide à faire en moins de 20 minutes..."></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Générer la recette magique</button>
+                        </form>
+                    </div>
+                    <div class="info-side" style="display:flex; flex-direction:column; justify-content:center; border-left: 1px dashed rgba(42,58,53,0.2); padding-left: 1.5rem;">
+                        <h3 style="font-family: var(--font-display); margin-bottom: 0.5rem;">Laissez opérer la magie</h3>
+                        <p style="color: var(--color-text-light); font-size: 1rem;">Notre générateur artisanal va composer une recette sur-mesure basée sur vos envies, avec descriptions détaillées et particularités d'assaisonnements.</p>
+                    </div>
+                </div>
+            </section>
+
+
+            <section id="catalogues" class="section-panel">
+                <h2 class="section-title">Catalogues</h2>
+                
+                <nav class="catalog-tabs" aria-label="Catégories de cuisines">
+                    <button class="tab-button active">Toutes</button>
+                    <button class="tab-button">Chinoise</button>
+                    <button class="tab-button">Italienne</button>
+                    <button class="tab-button">Française</button>
+                    <button class="tab-button">Américaine</button>
+                    <button class="tab-button">Fast Food</button>
+                    <button class="tab-button">Japonaise</button>
+                </nav>
+
+                <div class="recipe-grid">
+                    
+                    <article class="recipe-card">
+                        <div class="recipe-image-wrapper">
+                            <div class="recipe-image-placeholder">[ Illustration Risotto ]</div>
+                            <span class="recipe-badge">Plat</span>
+                            <button class="recipe-fav-btn" aria-label="Ajouter aux préférées">
+                                <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                            </button>
+                        </div>
+                        <div class="recipe-content">
+                            <div class="recipe-meta">Italienne • 35 min</div>
+                            <h3 class="recipe-name">Risotto aux Champignons Sauvages</h3>
+                            <p class="recipe-desc">Un grand classique crémeux lié au parmesan vieux, agrémenté de cèpes fraîchement cueillis et d'une pointe d'huile de truffe.</p>
+                            <div class="recipe-footer">
+                                <span class="recipe-tag">Artisanal & Chaud</span>
+                                <a href="#" class="btn btn-secondary" style="padding: 0.4rem 1rem; font-size: 0.8rem;">Voir les détails</a>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="recipe-card">
+                        <div class="recipe-image-wrapper">
+                            <div class="recipe-image-placeholder">[ Illustration Gyoza ]</div>
+                            <span class="recipe-badge">Entrée</span>
+                            <button class="recipe-fav-btn" aria-label="Ajouter aux préférées">
+                                <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                            </button>
+                        </div>
+                        <div class="recipe-content">
+                            <div class="recipe-meta">Japonaise • 45 min</div>
+                            <h3 class="recipe-name">Gyoza Dorés au Porc et Ciboule</h3>
+                            <p class="recipe-desc">Raviolis japonais croustillants d'un côté et fondants de l'autre, farcis avec soin et servis avec une sauce vinaigrée au sésame.</p>
+                            <div class="recipe-footer">
+                                <span class="recipe-tag">Précis & Savoureux</span>
+                                <a href="#" class="btn btn-secondary" style="padding: 0.4rem 1rem; font-size: 0.8rem;">Voir les détails</a>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="recipe-card">
+                        <div class="recipe-image-wrapper">
+                            <div class="recipe-image-placeholder">[ Illustration Tatin ]</div>
+                            <span class="recipe-badge">Dessert</span>
+                            <button class="recipe-fav-btn" aria-label="Ajouter aux préférées">
+                                <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                            </button>
+                        </div>
+                        <div class="recipe-content">
+                            <div class="recipe-meta">Française • 50 min</div>
+                            <h3 class="recipe-name">Tarte Tatin aux Pommes Confites</h3>
+                            <p class="recipe-desc">Pommes caramélisées de longues heures au beurre demi-sel sur une pâte feuilletée croustillante maison. Servie tiède.</p>
+                            <div class="recipe-footer">
+                                <span class="recipe-tag">Gourmand & Tradition</span>
+                                <a href="#" class="btn btn-secondary" style="padding: 0.4rem 1rem; font-size: 0.8rem;">Voir les détails</a>
+                            </div>
+                        </div>
+                    </article>
+
+                </div>
+            </section>
+
+
+            <section id="mes-recettes" class="section-panel">
+                <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 1.5rem; border-bottom: 1px solid var(--color-croute); padding-bottom: 0.5rem;">
+                    <h2 class="section-title" style="border:none; margin:0;">Mes recettes préférées</h2>
+                    <span style="font-family: var(--font-ui); font-size: 0.9rem; color: var(--color-cuivre);">2 recettes enregistrées</span>
+                </div>
+                
+                <div class="recipe-grid">
+                    <article class="recipe-card">
+                        <div class="recipe-image-wrapper">
+                            <div class="recipe-image-placeholder">[ Illustration Burger ]</div>
+                            <span class="recipe-badge">Plat</span>
+                            <button class="recipe-fav-btn" style="background: var(--color-sumac); color: var(--color-farine);" aria-label="Retirer des préférées">
+                                <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                            </button>
+                        </div>
+                        <div class="recipe-content">
+                            <div class="recipe-meta">Fast Food • 20 min</div>
+                            <h3 class="recipe-name">Smash Burger au Cheddar Affiné</h3>
+                            <p class="recipe-desc">Viande de bœuf croustillante sur les bords, oignons caramélisés sous le smash, sauce secrète maison dans un pain brioché toasté au beurre.</p>
+                            <div class="recipe-footer">
+                                <span class="recipe-tag">Sur le pouce</span>
+                                <a href="#" class="btn btn-secondary" style="padding: 0.4rem 1rem; font-size: 0.8rem;">Cuisiner à nouveau</a>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script>
+        document.querySelectorAll('.tab-button').forEach(button => {
+            button.addEventListener('click', () => {
+                document.querySelector('.tab-button.active').classList.remove('active');
+                button.classList.add('active');
+            });
+        });
+
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                document.querySelector('.nav-link.active').classList.remove('active');
+                link.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>
