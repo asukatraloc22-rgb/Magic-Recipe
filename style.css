@@ -165,3 +165,28 @@ img { max-width: 100%; display: block; height: auto; }
 @media (max-width: 768px) {
     .detail-grid { grid-template-columns: 1fr; gap: 2rem; }
 }
+
+/* -------------------------------------------------------------------------
+   COMPOSANT : BOUTONS D'ACTION (Supprimer)
+   ------------------------------------------------------------------------- */
+.action-buttons {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.recipe-delete-btn {
+    background: transparent;
+    border: none;
+    color: var(--color-text-light);
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.recipe-delete-btn:hover {
+    color: var(--color-sumac);
+    transform: scale(1.1);
+}
