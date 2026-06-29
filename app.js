@@ -161,7 +161,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const titleValue = titleInput.value.trim();
         const envieValue = envieInput.value.trim();
-        if (!titleValue || !envieValue) return;
+        if (!titleValue) return;
 
         const originalBtnText = submitBtn.textContent;
         submitBtn.textContent = "L'alchimiste compose votre recette...";
