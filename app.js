@@ -162,5 +162,67 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 1500);
     });
 
+    // ---------------------------------------------------------
+    // 8. GESTION DE LA VUE DÉTAIL D'UNE RECETTE
+    // ---------------------------------------------------------
+    const detailView = document.getElementById("detail-view");
+    const detailContent = document.getElementById("detail-content");
+    const btnBack = document.getElementById("btn-back");
+
+    // Écoute des clics sur les boutons "Voir les détails" (délégation d'événement)
+    document.addEventListener("click", (e) => {
+        const btnDetail = e.target.closest(".btn-detail");
+        if (btnDetail) {
+            // Remonter jusqu'à la carte pour trouver l'ID
+            const article = btnDetail.closest(".recipe-card");
+            const recipeId = parseInt(article.getAttribute("data-id"), 10);
+            const recipe = magicRecipes.find(r => r.id === recipeId);
+            
+            if (recipe) {
+                afficherDetails(recipe);
+            }
+        }
+    });
+
+    // Fonction d'affichage de la recette
+    function afficherDetails(recipe) {
+        // Construit le HTML interne avec les données de la recette
+        detailContent.innerHTML = `
+            <span class="recipe-badge" style="position: relative; inset: auto; display: inline-block; margin-bottom: 1rem;">${recipe.categorie}</span>
+            <h2 class="section-title" style="border: none; margin-bottom: 0.5rem; padding: 0; font-size: 3rem;">${recipe.nom}</h2>
+            <div class="recipe-meta" style="font-size: 1rem;">${recipe.origine} • Temps estimé : ${recipe.tempsCuisson}</div>
+            
+            <div class="detail-grid">
+                <div class="detail-ingredients">
+                    <h3 style="font-family: var(--font-display); color: var(--color-cuivre); margin-bottom: 1rem;">Ingrédients</h3>
+                    <ul>
+                        <li>Ingrédients de base</li>
+                        <li>Assaisonnements</li>
+                        <li>Une bonne pincée d'amour</li>
+                        </ul>
+                </div>
+                <div class="detail-instructions">
+                    <h3 style="font-family: var(--font-display); color: var(--color-cuivre); margin-bottom: 1rem;">Préparation</h3>
+                    <p>${recipe.description}</p>
+                    <p><em>(Cette section sera bientôt rédigée étape par étape par notre alchimiste culinaire !)</em></p>
+                </div>
+            </div>
+        `;
+        
+        // Bascule des vues
+        homeView.style.display = "none";
+        guideView.style.display = "none";
+        detailView.style.display = "block";
+        
+        // Remonte en haut de la page
+        window.scrollTo(0, 0);
+    }
+
+    // Fonction du bouton Retour
+    btnBack.addEventListener("click", () => {
+        detailView.style.display = "none";
+        homeView.style.display = "block";
+    });
+
     updateAppDisplay();
 });
