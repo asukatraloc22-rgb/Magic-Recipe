@@ -1,192 +1,211 @@
-/* DESIGN SYSTEM & VARIABLES */
+/* =========================================================================
+   THÈME "CARNET INTIME" (Doux, Scrapbook & Cosy)
+   ========================================================================= */
+
 :root {
-    --color-farine: #F9F6F0;
-    --color-sauge: #2A3A35;
-    --color-croute: #EAE3D9;
-    --color-cuivre: #D48A55;
-    --color-sumac: #963827;
-    --color-text-light: #5A6B65;
+    /* La nouvelle palette romantique */
+    --color-fond: #FDFBF7;        /* Crème vanille très claire */
+    --color-texte: #4A3B32;       /* Marron chocolat (plus doux que le noir) */
+    --color-carte: #FFFFFF;       /* Blanc pur pour l'effet papier photo */
+    --color-accent: #E8A598;      /* Rose poudré / Blush */
+    --color-accent-hover: #D48C7E;/* Rose ancien (au survol) */
+    --color-coeur: #E26D7D;       /* Rouge-Rose vif pour les favoris */
+    --color-text-light: #8A7A70;  /* Gris-taupe pour le texte secondaire */
     
-    --font-display: 'Fraunces', Georgia, serif;
-    --font-body: 'Alegreya Sans', sans-serif;
-    --font-ui: 'Space Mono', monospace;
+    /* Typographies douces et manuscrites */
+    --font-display: 'Caveat', cursive;     /* Titres façon manuscrit */
+    --font-body: 'Nunito', sans-serif;     /* Texte très rond et lisible */
+    --font-ui: 'Quicksand', sans-serif;    /* Boutons et menus doux */
     
+    /* Animations rebondissantes */
+    --transition-bounce: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     --transition-smooth: all 0.3s ease;
 }
 
-/* RESET & ACCESSIBILITÉ */
-*, *::before, *::after {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
+/* -------------------------------------------------------------------------
+   RESET & FOND DE PAGE
+   ------------------------------------------------------------------------- */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
     font-family: var(--font-body);
-    font-size: 1.15rem;
-    line-height: 1.5;
-    color: var(--color-sauge);
-    background-color: var(--color-farine);
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.025'/%3E%3C/svg%3E");
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: var(--color-texte);
+    background-color: var(--color-fond);
+    /* Léger motif de papier aquarelle en fond */
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
 }
 
-h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; line-height: 1.2; }
+h1, h2, h3, h4 { font-family: var(--font-display); line-height: 1.1; font-weight: 700; }
 a, button { cursor: pointer; color: inherit; text-decoration: none; }
-img { max-width: 100%; display: block; height: auto; }
+img { max-width: 100%; display: block; height: auto; border-radius: 4px; }
 
-/* LAYOUT (RESPONSIVE) */
+/* -------------------------------------------------------------------------
+   HEADER & NAVIGATION
+   ------------------------------------------------------------------------- */
 .app-container { display: flex; flex-direction: column; min-height: 100vh; }
 
 .main-header {
-    background-color: var(--color-croute);
-    border-bottom: 3px solid var(--color-cuivre);
+    background-color: var(--color-carte);
+    box-shadow: 0 4px 15px rgba(74, 59, 50, 0.05);
     padding: 1rem 2rem;
     position: sticky;
     top: 0;
     z-index: 100;
 }
 
-.header-content {
-    max-width: 1400px;
-    margin: 0 auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+.header-content { max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+
+.logo { font-family: var(--font-display); font-size: 2.2rem; color: var(--color-texte); transform: rotate(-2deg); }
+.logo span { color: var(--color-accent); }
+
+.main-nav ul { display: flex; list-style: none; gap: 1rem; }
+.nav-link { 
+    font-family: var(--font-ui); font-size: 1rem; font-weight: 700;
+    padding: 0.5rem 1rem; border-radius: 20px; transition: var(--transition-smooth); 
 }
-
-.logo { font-family: var(--font-display); font-size: 1.8rem; font-weight: 700; }
-.logo span { color: var(--color-cuivre); }
-
-.main-nav ul { display: flex; list-style: none; gap: 1.5rem; }
-.nav-link { font-family: var(--font-ui); font-size: 0.9rem; text-transform: uppercase; padding: 0.5rem 1rem; border-radius: 4px; transition: var(--transition-smooth); }
-.nav-link:hover, .nav-link.active { background-color: var(--color-sauge); color: var(--color-farine); }
+.nav-link:hover { color: var(--color-accent); }
+.nav-link.active { background-color: var(--color-accent); color: var(--color-carte); }
 
 .main-content { flex: 1; max-width: 1400px; width: 100%; margin: 0 auto; padding: 2rem; }
 .section-panel { margin-bottom: 4rem; }
-.section-title { font-size: 2.5rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--color-croute); padding-bottom: 0.5rem; }
 
-/* FORMULAIRE (Nouvelle création) */
-.creation-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; background: var(--color-croute); padding: 2.5rem; border-radius: 4px; position: relative; }
-.creation-grid::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background-color: var(--color-cuivre); border-radius: 4px 4px 0 0; }
+/* Titres de section avec un style "Surligné au marqueur" */
+.section-title { 
+    font-size: 3rem; margin-bottom: 2rem; 
+    position: relative; display: inline-block;
+}
+.section-title::after {
+    content: ''; position: absolute; bottom: 8px; left: 0; right: 0;
+    height: 12px; background-color: var(--color-accent); opacity: 0.3;
+    z-index: -1; border-radius: 6px; transform: rotate(-1deg);
+}
+
+/* -------------------------------------------------------------------------
+   INTERACTIONS : BOUTONS "SQUISHY"
+   ------------------------------------------------------------------------- */
+.btn { 
+    display: inline-flex; align-items: center; justify-content: center; 
+    font-family: var(--font-ui); font-size: 1rem; font-weight: 700; 
+    padding: 0.8rem 1.8rem; border: none; border-radius: 25px; 
+    transition: var(--transition-bounce); /* Effet élastique */
+}
+/* Le fameux effet où le bouton s'enfonce quand on clique dessus */
+.btn:active, .recipe-delete-btn:active, .recipe-fav-btn:active {
+    transform: scale(0.9) !important;
+}
+
+.btn-primary { background-color: var(--color-accent); color: var(--color-carte); box-shadow: 0 4px 10px rgba(232, 165, 152, 0.3); }
+.btn-primary:hover { background-color: var(--color-accent-hover); transform: translateY(-3px); box-shadow: 0 6px 15px rgba(232, 165, 152, 0.4); }
+
+.btn-secondary { background-color: transparent; border: 2px solid var(--color-accent); color: var(--color-accent); }
+.btn-secondary:hover { background-color: var(--color-accent); color: var(--color-carte); }
+
+/* -------------------------------------------------------------------------
+   FORMULAIRE (Le carnet de notes)
+   ------------------------------------------------------------------------- */
+.creation-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; background: var(--color-carte); padding: 2.5rem; border-radius: 12px; box-shadow: 0 8px 30px rgba(74, 59, 50, 0.05); }
 .form-group { margin-bottom: 1.5rem; }
-.form-group label { display: block; font-family: var(--font-ui); font-size: 0.85rem; text-transform: uppercase; margin-bottom: 0.5rem; }
-.form-control { width: 100%; padding: 0.8rem 1rem; font-family: var(--font-body); font-size: 1.1rem; background-color: var(--color-farine); border: 1px solid rgba(42, 58, 53, 0.2); border-radius: 4px; transition: var(--transition-smooth); }
-.form-control:focus { outline: none; border-color: var(--color-cuivre); box-shadow: 0 0 0 3px rgba(212, 138, 85, 0.15); }
+.form-group label { display: block; font-family: var(--font-ui); font-weight: 700; font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--color-texte); }
+.form-control { 
+    width: 100%; padding: 1rem; font-family: var(--font-body); font-size: 1.1rem; 
+    background-color: var(--color-fond); border: 2px solid transparent; 
+    border-radius: 8px; transition: var(--transition-smooth); color: var(--color-texte);
+}
+.form-control:focus { outline: none; border-color: var(--color-accent); background-color: var(--color-carte); box-shadow: 0 0 0 4px rgba(232, 165, 152, 0.1); }
 
-/* BOUTONS */
-.btn { display: inline-flex; align-items: center; justify-content: center; font-family: var(--font-ui); text-transform: uppercase; font-size: 0.9rem; padding: 0.8rem 2rem; border: none; border-radius: 4px; transition: var(--transition-smooth); font-weight: bold; }
-.btn-primary { background-color: var(--color-cuivre); color: var(--color-farine); }
-.btn-primary:hover { background-color: #be7543; transform: translateY(-1px); }
-.btn-secondary { background-color: transparent; border: 2px solid var(--color-sauge); color: var(--color-sauge); }
-.btn-secondary:hover { background-color: var(--color-sauge); color: var(--color-farine); }
+/* -------------------------------------------------------------------------
+   ONGLETS CATALOGUE (Tags doux)
+   ------------------------------------------------------------------------- */
+.catalog-tabs { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-bottom: 2.5rem; }
+.tab-button { 
+    font-family: var(--font-ui); font-weight: 700; font-size: 1rem; 
+    padding: 0.5rem 1.2rem; background: var(--color-carte); color: var(--color-text-light);
+    border: 2px solid transparent; border-radius: 20px; transition: var(--transition-bounce); 
+    box-shadow: 0 2px 8px rgba(74, 59, 50, 0.04);
+}
+.tab-button:hover { transform: translateY(-2px); border-color: var(--color-accent); color: var(--color-texte); }
+.tab-button.active { background-color: var(--color-accent); color: var(--color-carte); transform: translateY(-2px); }
 
-/* ONGLETS DU CATALOGUE */
-.catalog-tabs { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2rem; border-bottom: 2px solid var(--color-croute); padding-bottom: 0.75rem; }
-.tab-button { font-family: var(--font-body); font-size: 1.2rem; padding: 0.4rem 1.2rem; background: transparent; border: none; border-radius: 20px; transition: var(--transition-smooth); }
-.tab-button:hover { background-color: var(--color-croute); }
-.tab-button.active { background-color: var(--color-sumac); color: var(--color-farine); }
+/* -------------------------------------------------------------------------
+   L'EFFET POLAROÏD (Cartes de Recettes)
+   ------------------------------------------------------------------------- */
+.recipe-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 3rem; }
 
-/* GRILLE & CARTES DE RECETTES */
-.recipe-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 2.5rem; }
-.recipe-card { background-color: var(--color-croute); border-radius: 4px; overflow: hidden; position: relative; display: flex; flex-direction: column; box-shadow: 0 4px 15px rgba(0,0,0,0.01); transition: var(--transition-smooth); }
-.recipe-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background-color: var(--color-cuivre); z-index: 2; }
-.recipe-card:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(42, 58, 53, 0.06); }
-.recipe-image-wrapper { position: relative; height: 220px; background-color: #dfd7cc; overflow: hidden; }
-.recipe-image-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-style: italic; color: var(--color-text-light); background: linear-gradient(135deg, var(--color-croute) 0%, #dcd3c5 100%); }
-.recipe-badge { position: absolute; bottom: 1rem; left: 1rem; background-color: var(--color-farine); padding: 0.2rem 0.6rem; font-family: var(--font-ui); font-size: 0.75rem; text-transform: uppercase; border-radius: 2px; }
-.recipe-fav-btn { position: absolute; top: 1rem; right: 1rem; background: var(--color-farine); border: none; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--color-sumac); box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: var(--transition-smooth); z-index: 3; }
-.recipe-fav-btn:hover, .recipe-fav-btn.active { transform: scale(1.1); background-color: var(--color-sumac); color: var(--color-farine); }
-.recipe-content { padding: 1.5rem; display: flex; flex-direction: column; flex-grow: 1; }
-.recipe-meta { font-family: var(--font-ui); font-size: 0.8rem; color: var(--color-text-light); margin-bottom: 0.5rem; text-transform: uppercase; }
-.recipe-name { font-size: 1.6rem; margin-bottom: 0.75rem; color: var(--color-sauge); }
-.recipe-desc { font-size: 1.05rem; color: var(--color-text-light); margin-bottom: 1.5rem; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-.recipe-footer { margin-top: auto; display: flex; justify-content: space-between; align-items: center; font-family: var(--font-ui); font-size: 0.85rem; }
-.recipe-tag { color: var(--color-cuivre); font-weight: bold; }
+.recipe-card { 
+    background-color: var(--color-carte); 
+    padding: 1rem 1rem 1.5rem 1rem; /* Bords blancs typiques du Polaroïd */
+    border-radius: 8px; 
+    box-shadow: 0 8px 25px rgba(74, 59, 50, 0.08); 
+    transition: var(--transition-bounce); 
+    display: flex; flex-direction: column; 
+    position: relative;
+}
+/* Le Polaroïd s'incline joyeusement au survol ! */
+.recipe-card:hover { transform: translateY(-10px) rotate(1.5deg); box-shadow: 0 15px 35px rgba(74, 59, 50, 0.12); z-index: 2; }
+/* Une carte sur deux s'incline dans l'autre sens pour un effet "jeté sur la table" */
+.recipe-card:nth-child(even):hover { transform: translateY(-10px) rotate(-1.5deg); }
 
-/* MEDIA QUERIES */
-@media (max-width: 900px) { .creation-grid { grid-template-columns: 1fr; } }
+.recipe-image-wrapper { position: relative; height: 240px; background-color: #f0e9df; border-radius: 4px; overflow: hidden; margin-bottom: 1rem; }
+.recipe-badge { 
+    position: absolute; bottom: 0.8rem; left: 0.8rem; 
+    background-color: rgba(255, 255, 255, 0.9); backdrop-filter: blur(4px);
+    padding: 0.3rem 0.8rem; font-family: var(--font-ui); font-size: 0.8rem; font-weight: 700;
+    border-radius: 15px; color: var(--color-texte);
+}
+
+/* -------------------------------------------------------------------------
+   ANIMATION DU BOUTON COEUR (Battement)
+   ------------------------------------------------------------------------- */
+@keyframes heartBeat {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.4); }
+    100% { transform: scale(1); }
+}
+
+.recipe-fav-btn { 
+    position: absolute; top: 0.8rem; right: 0.8rem; 
+    background: var(--color-carte); border: none; width: 45px; height: 45px; border-radius: 50%; 
+    display: flex; align-items: center; justify-content: center; 
+    color: var(--color-text-light); box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
+    transition: var(--transition-bounce); z-index: 3; 
+}
+.recipe-fav-btn:hover { color: var(--color-coeur); transform: scale(1.1); }
+.recipe-fav-btn.active { color: var(--color-coeur); }
+/* Quand le bouton est actif, on anime l'icône à l'intérieur */
+.recipe-fav-btn.active svg { animation: heartBeat 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); fill: var(--color-coeur); }
+
+.recipe-content { display: flex; flex-direction: column; flex-grow: 1; padding: 0 0.5rem; }
+.recipe-meta { font-family: var(--font-ui); font-size: 0.85rem; color: var(--color-accent); font-weight: 700; margin-bottom: 0.3rem; text-transform: uppercase; letter-spacing: 1px;}
+.recipe-name { font-size: 2.2rem; margin-bottom: 0.5rem; color: var(--color-texte); line-height: 1.1; }
+.recipe-desc { font-size: 1rem; color: var(--color-text-light); margin-bottom: 1.5rem; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.recipe-footer { margin-top: auto; display: flex; justify-content: space-between; align-items: center; }
+
+/* Bouton Supprimer plus mignon */
+.action-buttons { display: flex; gap: 0.5rem; align-items: center; }
+.recipe-delete-btn { background: var(--color-fond); border: none; width: 35px; height: 35px; border-radius: 50%; color: var(--color-text-light); transition: var(--transition-bounce); display: flex; align-items: center; justify-content: center; }
+.recipe-delete-btn:hover { background: #fee2e2; color: #ef4444; transform: scale(1.1); }
+
+/* -------------------------------------------------------------------------
+   VUE DETAILS (La page du Carnet ouverte)
+   ------------------------------------------------------------------------- */
+#detail-content { background: var(--color-carte); padding: 3rem; border-radius: 12px; box-shadow: 0 8px 30px rgba(74, 59, 50, 0.05); position: relative; overflow: hidden; }
+.detail-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 3rem; margin-top: 2rem; padding-top: 2rem; border-top: 2px dashed var(--color-accent); }
+.detail-ingredients ul { list-style-type: none; padding-left: 0; }
+.detail-ingredients li { position: relative; padding-left: 1.5rem; margin-bottom: 0.8rem; color: var(--color-texte); }
+/* Des petites puces en forme de point rose */
+.detail-ingredients li::before { content: '•'; position: absolute; left: 0; color: var(--color-accent); font-size: 1.5rem; top: -5px; }
+
+/* -------------------------------------------------------------------------
+   RESPONSIVE (Mobiles)
+   ------------------------------------------------------------------------- */
+@media (max-width: 900px) { .creation-grid, .detail-grid { grid-template-columns: 1fr; gap: 2rem; } }
 @media (max-width: 650px) {
     .header-content { flex-direction: column; gap: 1rem; }
     .main-nav ul { gap: 0.5rem; flex-wrap: wrap; justify-content: center; }
-    .nav-link { padding: 0.4rem 0.6rem; font-size: 0.8rem; }
+    .nav-link { padding: 0.4rem 0.6rem; font-size: 0.9rem; }
     .main-content { padding: 1rem; }
-    .section-title { font-size: 2rem; }
-}
-
-/* -------------------------------------------------------------------------
-   COMPOSANT : GUIDE MAGIQUE
-   ------------------------------------------------------------------------- */
-.guide-container { max-width: 800px; margin: 0 auto; padding-bottom: 4rem; }
-.guide-card { background-color: var(--color-croute); padding: 3rem; border-radius: 4px; position: relative; box-shadow: 0 4px 20px rgba(0,0,0,0.02); margin-bottom: 2rem; }
-.guide-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background-color: var(--color-cuivre); border-radius: 4px 4px 0 0; }
-.guide-step { margin-bottom: 2.5rem; }
-.guide-step h3 { color: var(--color-cuivre); font-size: 1.5rem; margin-bottom: 1rem; font-family: var(--font-display); }
-.guide-step p { margin-bottom: 1rem; }
-.example-box { background-color: var(--color-farine); border-left: 4px solid var(--color-sauge); padding: 1rem 1.5rem; font-family: var(--font-ui); font-size: 0.95rem; color: var(--color-text-light); }
-
-@media (max-width: 650px) {
-    .guide-card { padding: 1.5rem; }
-}
-
-/* -------------------------------------------------------------------------
-   COMPOSANT : DÉTAILS DE LA RECETTE
-   ------------------------------------------------------------------------- */
-#detail-content::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 4px;
-    background-color: var(--color-cuivre);
-    border-radius: 4px 4px 0 0;
-}
-
-.detail-grid {
-    display: grid;
-    grid-template-columns: 1fr 2fr;
-    gap: 3rem;
-    margin-top: 2rem;
-    padding-top: 2rem;
-    border-top: 1px solid rgba(42, 58, 53, 0.1);
-}
-
-.detail-ingredients ul {
-    list-style-type: square;
-    padding-left: 1.2rem;
-    color: var(--color-text-light);
-    line-height: 1.8;
-}
-
-.detail-instructions p {
-    color: var(--color-text-light);
-    line-height: 1.8;
-    margin-bottom: 1rem;
-}
-
-@media (max-width: 768px) {
-    .detail-grid { grid-template-columns: 1fr; gap: 2rem; }
-}
-
-/* -------------------------------------------------------------------------
-   COMPOSANT : BOUTONS D'ACTION (Supprimer)
-   ------------------------------------------------------------------------- */
-.action-buttons {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-}
-
-.recipe-delete-btn {
-    background: transparent;
-    border: none;
-    color: var(--color-text-light);
-    cursor: pointer;
-    transition: var(--transition-smooth);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.recipe-delete-btn:hover {
-    color: var(--color-sumac);
-    transform: scale(1.1);
+    .section-title { font-size: 2.2rem; }
+    #detail-content { padding: 1.5rem; }
 }
