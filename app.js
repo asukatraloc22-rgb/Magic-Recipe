@@ -121,7 +121,10 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    generatorForm.addEventListener("submit", (e) => {
+ // ---------------------------------------------------------
+    // 7. GÉNÉRATEUR DE RECETTE (IA RÉELLE VIA VERCEL)
+    // ---------------------------------------------------------
+    generatorForm.addEventListener("submit", async (e) => {
         e.preventDefault();
 
         const titleValue = titleInput.value.trim();
@@ -129,26 +132,53 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (!titleValue || !envieValue) return;
 
+        // Feedback visuel pendant que l'IA réfléchit
         const originalBtnText = submitBtn.textContent;
-        submitBtn.textContent = "Alchimie culinaire en cours...";
+        submitBtn.textContent = "L'alchimiste compose votre recette...";
         submitBtn.disabled = true;
         submitBtn.style.opacity = "0.7";
 
-        setTimeout(() => {
-            const newRecipe = {
-                id: Date.now(),
-                nom: `✨ ${titleValue}`,
-                categorie: "Création",
-                origine: "maison", 
-                tempsCuisson: Math.floor(Math.random() * 20 + 10) + " min",
-                description: `Une création unique imaginée pour satisfaire votre envie : "${envieValue}". Mijotée avec amour par notre algorithme artisanal.`,
-                tags: ["Généré sur-mesure"],
-                isFavorite: true,
-                imageFallback: "[ Illustration Création ]"
-            };
+        try {
+            // Appel à notre Backend sécurisé sur Vercel
+            const response = await fetch('/api/generate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ title: titleValue, envie: envieValue })
+            });
 
+            if (!response.ok) {
+                throw new Error("Erreur de génération du serveur");
+            }
+
+            // On récupère la recette générée par Gemini !
+            const newRecipe = await response.json();
+
+            // On ajoute une petite étincelle magique au nom
+            newRecipe.nom = `✨ ${newRecipe.nom}`;
+
+            // On l'ajoute à la base de données et on sauvegarde
             magicRecipes.unshift(newRecipe);
-            
+            saveDatabase();
+            updateAppDisplay();
+
+            // Nettoyage du formulaire
+            generatorForm.reset();
+
+            // On fait défiler l'écran vers le résultat
+            document.getElementById("mes-recettes").scrollIntoView({ behavior: 'smooth' });
+
+        } catch (error) {
+            console.error(error);
+            alert("Oups, l'alchimiste a fait brûler la préparation. Vérifiez votre connexion ou réessayez !");
+        } finally {
+            // Retour à la normale du bouton, quoi qu'il arrive
+            submitBtn.textContent = originalBtnText;
+            submitBtn.disabled = false;
+            submitBtn.style.opacity = "1";
+        }
+    }); 
             // NOUVEAU : Sauvegarde de la nouvelle recette dans le navigateur
             saveDatabase();
             updateAppDisplay();
