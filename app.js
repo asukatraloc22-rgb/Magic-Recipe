@@ -21,11 +21,15 @@ document.addEventListener("DOMContentLoaded", () => {
     function createRecipeCardHtml(recipe) {
         const favBtnClass = recipe.isFavorite ? "recipe-fav-btn active" : "recipe-fav-btn";
         const favIconColor = recipe.isFavorite ? "currentColor" : "none";
+        
+        // Création de l'URL de l'image (avec fallback sur le nom si l'IA n'a pas donné de keyword)
+        const imageSearchTerm = recipe.imageKeyword || `delicious food photography of ${recipe.nom}, realistic`;
+        const imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(imageSearchTerm)}?width=600&height=400&nologo=true`;
 
         return `
             <article class="recipe-card" data-id="${recipe.id}">
                 <div class="recipe-image-wrapper">
-                    <div class="recipe-image-placeholder">${recipe.imageFallback || "[ Illustration ]"}</div>
+                    <img src="${imageUrl}" alt="${recipe.nom}" style="width: 100%; height: 100%; object-fit: cover;">
                     <span class="recipe-badge">${recipe.categorie}</span>
                     <button class="${favBtnClass}" aria-label="Ajouter ou retirer des préférées" data-id="${recipe.id}">
                         <svg width="20" height="20" fill="${favIconColor}" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -39,7 +43,14 @@ document.addEventListener("DOMContentLoaded", () => {
                     <p class="recipe-desc">${recipe.description}</p>
                     <div class="recipe-footer">
                         <span class="recipe-tag">${recipe.tags[0]}</span>
-                        <button class="btn btn-secondary btn-detail" style="padding: 0.4rem 1rem; font-size: 0.8rem;">Voir les détails</button>
+                        <div class="action-buttons">
+                            <button class="recipe-delete-btn" aria-label="Supprimer la recette" data-id="${recipe.id}" title="Supprimer">
+                                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                            </button>
+                            <button class="btn btn-secondary btn-detail" style="padding: 0.4rem 1rem; font-size: 0.8rem;">Voir</button>
+                        </div>
                     </div>
                 </div>
             </article>
@@ -69,7 +80,7 @@ document.addEventListener("DOMContentLoaded", () => {
             favoritesGrid.innerHTML = favoriteRecipes.map(recipe => createRecipeCardHtml(recipe)).join("");
         }
 
-        attachFavoriteButtonListeners();
+        attachCardListeners();
     }
 
     filterContainer.addEventListener("click", (e) => {
@@ -80,7 +91,9 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    function attachFavoriteButtonListeners() {
+    // Écouteurs pour le bouton Favoris ET le bouton Supprimer
+    function attachCardListeners() {
+        // Boutons Favoris
         const favButtons = document.querySelectorAll(".recipe-fav-btn");
         favButtons.forEach(button => {
             button.addEventListener("click", (e) => {
@@ -95,9 +108,26 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             });
         });
+
+        // Boutons Supprimer
+        const deleteButtons = document.querySelectorAll(".recipe-delete-btn");
+        deleteButtons.forEach(button => {
+            button.addEventListener("click", (e) => {
+                const btn = e.target.closest(".recipe-delete-btn");
+                const recipeId = parseInt(btn.getAttribute("data-id"), 10);
+                
+                if (confirm("Voulez-vous vraiment jeter cette recette aux oubliettes ?")) {
+                    const index = magicRecipes.findIndex(r => r.id === recipeId);
+                    if (index !== -1) {
+                        magicRecipes.splice(index, 1);
+                        saveDatabase();
+                        updateAppDisplay();
+                    }
+                }
+            });
+        });
     }
 
-    // Gestion propre de la navigation
     navLinks.forEach(link => {
         link.addEventListener("click", (e) => {
             const currentActive = document.querySelector(".nav-link.active");
@@ -118,7 +148,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // IA Backend
     generatorForm.addEventListener("submit", async (e) => {
         e.preventDefault();
 
@@ -138,7 +167,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 body: JSON.stringify({ title: titleValue, envie: envieValue })
             });
 
-            if (!response.ok) throw new Error("Erreur de génération du serveur");
+            if (!response.ok) throw new Error("Erreur de génération");
 
             const newRecipe = await response.json();
             newRecipe.nom = `✨ ${newRecipe.nom}`;
@@ -158,7 +187,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // Affichage des détails au clic
     document.addEventListener("click", (e) => {
         const btnDetail = e.target.closest(".btn-detail");
         if (btnDetail) {
@@ -170,22 +198,22 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     function afficherDetails(recipe) {
-        // Préparation des ingrédients (avec fallback si c'est une vieille recette sans ingrédients)
-        let ingredientsHTML = "<li>Aucun ingrédient détaillé (Ancienne recette)</li>";
+        let ingredientsHTML = "<li>Aucun ingrédient détaillé</li>";
         if (recipe.ingredients && Array.isArray(recipe.ingredients)) {
             ingredientsHTML = recipe.ingredients.map(ing => `<li>${ing}</li>`).join('');
         }
 
-        // Préparation des étapes
         let instructionsHTML = `<p>${recipe.description}</p>`;
         if (recipe.instructions && Array.isArray(recipe.instructions)) {
             instructionsHTML = recipe.instructions.map((inst, index) => `<p style="margin-bottom: 1rem;"><strong>Étape ${index + 1} :</strong> ${inst}</p>`).join('');
         }
 
-        // Création du HTML complet avec la grande bannière image
+        const imageSearchTerm = recipe.imageKeyword || `delicious food photography of ${recipe.nom}, realistic`;
+        const imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(imageSearchTerm)}?width=1200&height=400&nologo=true`;
+
         detailContent.innerHTML = `
-            <div style="height: 250px; margin: -3rem -3rem 2rem -3rem; background: linear-gradient(135deg, var(--color-croute) 0%, #dcd3c5 100%); display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-style: italic; color: var(--color-text-light); font-size: 1.5rem; border-bottom: 4px solid var(--color-cuivre);">
-                ${recipe.imageFallback || "[ Illustration Magique ]"}
+            <div style="height: 350px; margin: -3rem -3rem 2rem -3rem; overflow: hidden; border-bottom: 4px solid var(--color-cuivre); position: relative;">
+                <img src="${imageUrl}" alt="${recipe.nom}" style="width: 100%; height: 100%; object-fit: cover;">
             </div>
             
             <span class="recipe-badge" style="position: relative; inset: auto; display: inline-block; margin-bottom: 1rem; border: 1px solid var(--color-sauge);">${recipe.categorie}</span>
@@ -195,9 +223,7 @@ document.addEventListener("DOMContentLoaded", () => {
             <div class="detail-grid">
                 <div class="detail-ingredients">
                     <h3 style="font-family: var(--font-display); color: var(--color-cuivre); margin-bottom: 1rem;">Ingrédients</h3>
-                    <ul>
-                        ${ingredientsHTML}
-                    </ul>
+                    <ul>${ingredientsHTML}</ul>
                 </div>
                 <div class="detail-instructions">
                     <h3 style="font-family: var(--font-display); color: var(--color-cuivre); margin-bottom: 1rem;">Préparation</h3>
