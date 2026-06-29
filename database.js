@@ -1,7 +1,8 @@
 // database.js
-// Base de données locale simulant le catalogue de recettes
+// Base de données avec persistance LocalStorage
 
-const magicRecipes = [
+// 1. Nos recettes par défaut (catalogue de base)
+const defaultRecipes = [
     {
         id: 1,
         nom: "Risotto aux Champignons Sauvages",
@@ -43,7 +44,7 @@ const magicRecipes = [
         tempsCuisson: "20 min",
         description: "Viande de bœuf croustillante sur les bords, oignons caramélisés sous le smash, sauce secrète maison dans un pain brioché toasté.",
         tags: ["Sur le pouce"],
-        isFavorite: true, // Celle-ci apparaîtra dans "Mes recettes"
+        isFavorite: true,
         imageFallback: "[ Illustration Burger ]"
     },
     {
@@ -69,3 +70,18 @@ const magicRecipes = [
         imageFallback: "[ Illustration Mac & Cheese ]"
     }
 ];
+
+// 2. Récupération des données depuis le navigateur
+// On parse le JSON stocké. Si c'null (vide), on utilise nos recettes par défaut.
+let magicRecipes = JSON.parse(localStorage.getItem('magic_recipes_db'));
+
+if (!magicRecipes) {
+    magicRecipes = defaultRecipes;
+    // On sauvegarde immédiatement la base par défaut dans le navigateur
+    localStorage.setItem('magic_recipes_db', JSON.stringify(magicRecipes));
+}
+
+// 3. Fonction utilitaire pour sauvegarder tout nouveau changement
+function saveDatabase() {
+    localStorage.setItem('magic_recipes_db', JSON.stringify(magicRecipes));
+}
