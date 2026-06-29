@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Magic Recipe — Votre Carnet de Cuisine Artisanal</title>
-    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#D48A55">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Alegreya+Sans:ital,wght@0,300;0,400;0,700;1,400&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;1,9..144,400&family=Space+Mono&display=swap" rel="stylesheet">
@@ -110,5 +111,14 @@
 
     <script src="database.js"></script>
     <script src="app.js"></script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('sw.js')
+            .then(reg => console.log('Service Worker enregistré !'))
+            .catch(err => console.error('Erreur Service Worker :', err));
+        });
+      }
+    </script>
 </body>
 </html>
