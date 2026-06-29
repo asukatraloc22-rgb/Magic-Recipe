@@ -94,10 +94,30 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+   // 6. GESTION DES VUES (SINGLE PAGE APPLICATION)
+    const homeView = document.getElementById("home-view");
+    const guideView = document.getElementById("guide-view");
+
     navLinks.forEach(link => {
         link.addEventListener("click", (e) => {
-            document.querySelector(".nav-link.active").classList.remove("active");
+            // Mise à jour visuelle du bouton actif dans le menu
+            const currentActive = document.querySelector(".nav-link.active");
+            if (currentActive) currentActive.classList.remove("active");
             link.classList.add("active");
+
+            // Récupération de la cible du lien (ex: "#creation" ou "#guide-view")
+            const targetId = link.getAttribute("href");
+
+            if (targetId === "#guide-view") {
+                // On masque l'accueil et on affiche le guide
+                homeView.style.display = "none";
+                guideView.style.display = "block";
+            } else {
+                // On affiche l'accueil et on masque le guide
+                homeView.style.display = "block";
+                guideView.style.display = "none";
+                // Le navigateur se chargera ensuite de scroller naturellement vers la bonne section
+            }
         });
     });
 
