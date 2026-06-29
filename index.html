@@ -85,40 +85,24 @@
                 <p style="text-align: center; color: var(--color-text-light); margin-bottom: 3rem; font-style: italic;">
                     Comment murmurer à l'oreille de notre alchimiste culinaire pour obtenir la recette parfaite.
                 </p>
-
-            <div id="detail-view" style="display: none;">
-                <button id="btn-back" class="btn btn-secondary" style="margin-bottom: 2rem;">← Retour aux recettes</button>
-                
-                <div id="detail-content" style="background: var(--color-croute); padding: 3rem; border-radius: 4px; box-shadow: 0 4px 20px rgba(0,0,0,0.02); position: relative;">
-                    </div>
-            </div>
-
                 <div class="guide-card">
                     <div class="guide-step">
                         <h3>1. Inventoriez votre garde-manger avec précision</h3>
                         <p>La magie opère mieux quand elle connaît ses ingrédients. Soyez spécifique sur ce qui s'ennuie dans votre frigo.</p>
-                        <div class="example-box">
-                            <strong>À éviter :</strong> "J'ai du poulet et des trucs."<br><br>
-                            <strong>Magique :</strong> "J'ai 2 filets de poulet, un demi-brocoli un peu fatigué, de la sauce soja et des cacahuètes."
-                        </div>
+                        <div class="example-box"><strong>Magique :</strong> "J'ai 2 filets de poulet, un demi-brocoli un peu fatigué, de la sauce soja."</div>
                     </div>
-
                     <div class="guide-step">
                         <h3>2. Donnez le ton de votre envie</h3>
                         <p>Précisez le contexte de votre repas. Un plat réconfortant ? Un dîner express ?</p>
-                        <div class="example-box">
-                            <strong>Exemple :</strong> "Je cherche un plat très réconfortant et riche en fromage, prêt en moins de 30 minutes."
-                        </div>
-                    </div>
-
-                    <div class="guide-step">
-                        <h3>3. Précisez vos contraintes</h3>
-                        <p>N'oubliez pas d'indiquer les allergies, les régimes ou les ingrédients que vous détestez.</p>
-                        <div class="example-box">
-                            <strong>Règles :</strong> "Strictement végétarien, sans gluten, et je déteste la coriandre fraîche."
-                        </div>
+                        <div class="example-box"><strong>Exemple :</strong> "Je cherche un plat très réconfortant et riche en fromage."</div>
                     </div>
                 </div>
+            </div>
+
+            <div id="detail-view" style="display: none;">
+                <button id="btn-back" class="btn btn-secondary" style="margin-bottom: 2rem;">← Retour aux recettes</button>
+                <div id="detail-content" style="background: var(--color-croute); padding: 3rem; border-radius: 4px; box-shadow: 0 4px 20px rgba(0,0,0,0.02); position: relative; overflow: hidden;">
+                    </div>
             </div>
 
         </main>
