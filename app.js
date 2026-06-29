@@ -179,18 +179,6 @@ document.addEventListener("DOMContentLoaded", () => {
             submitBtn.style.opacity = "1";
         }
     }); 
-            // NOUVEAU : Sauvegarde de la nouvelle recette dans le navigateur
-            saveDatabase();
-            updateAppDisplay();
-
-            generatorForm.reset();
-            submitBtn.textContent = originalBtnText;
-            submitBtn.disabled = false;
-            submitBtn.style.opacity = "1";
-
-            document.getElementById("mes-recettes").scrollIntoView({ behavior: 'smooth' });
-        }, 1500);
-    });
 
     // ---------------------------------------------------------
     // 8. GESTION DE LA VUE DÉTAIL D'UNE RECETTE
