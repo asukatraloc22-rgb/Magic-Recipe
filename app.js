@@ -25,12 +25,17 @@ document.addEventListener("DOMContentLoaded", () => {
         const favBtnClass = recipe.isFavorite ? "recipe-fav-btn active" : "recipe-fav-btn";
         const favIconColor = recipe.isFavorite ? "currentColor" : "none";
         
-        // 1. Nettoyage du nom : on retire l'émoji ✨ pour ne pas casser l'URL
-        const cleanName = recipe.nom.replace(/✨/g, '').trim();
+        // 1. Nettoyage extrême : on enlève émoji ET guillemets pour ne pas casser le HTML
+        const cleanName = recipe.nom.replace(/✨/g, '').replace(/["']/g, '').trim();
         
-        // 2. Création de l'URL
-        const imageSearchTerm = recipe.imageKeyword || `delicious food photography of ${cleanName}, realistic`;
-        const imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(imageSearchTerm)}?width=600&height=400&nologo=true`;
+        // 2. Création de l'URL sécurisée
+        let searchPrompt = recipe.imageKeyword;
+        if (!searchPrompt) {
+            // Si c'est une vieille recette sans mot clé court, on coupe le nom s'il est trop long
+            let shortName = cleanName.length > 40 ? cleanName.substring(0, 40) + "..." : cleanName;
+            searchPrompt = `delicious food photography of ${shortName}, realistic`;
+        }
+        const imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(searchPrompt)}?width=600&height=400&nologo=true`;
 
         return `
             <article class="recipe-card" data-id="${recipe.id}">
@@ -211,9 +216,16 @@ document.addEventListener("DOMContentLoaded", () => {
             instructionsHTML = recipe.instructions.map((inst, index) => `<p style="margin-bottom: 1rem;"><strong>Étape ${index + 1} :</strong> ${inst}</p>`).join('');
         }
 
-        const cleanName = recipe.nom.replace(/✨/g, '').trim();
-        const imageSearchTerm = recipe.imageKeyword || `delicious food photography of ${cleanName}, realistic`;
-        const imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(imageSearchTerm)}?width=1200&height=400&nologo=true`;
+        // 1. Nettoyage extrême
+        const cleanName = recipe.nom.replace(/✨/g, '').replace(/["']/g, '').trim();
+        
+        // 2. Création de l'URL sécurisée
+        let searchPrompt = recipe.imageKeyword;
+        if (!searchPrompt) {
+            let shortName = cleanName.length > 40 ? cleanName.substring(0, 40) + "..." : cleanName;
+            searchPrompt = `delicious food photography of ${shortName}, realistic`;
+        }
+        const imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(searchPrompt)}?width=1200&height=400&nologo=true`;
         
         // Image de secours version large
         const fallbackImageLarge = "https://images.unsplash.com/photo-1495195134817-a1a18bc0c8b1?auto=format&fit=crop&w=1200&q=80";
