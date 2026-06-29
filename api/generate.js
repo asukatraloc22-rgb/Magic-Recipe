@@ -12,7 +12,6 @@ export default async function handler(req, res) {
         return res.status(500).json({ error: 'Clé API manquante dans Vercel' });
     }
 
-    // NOUVEAU PROMPT : On demande les ingrédients et les instructions !
     const prompt = `Tu es un chef cuisinier expert et artisanal. 
     L'utilisateur a ces ingrédients ou idées : "${title}". 
     Il a cette envie : "${envie}".
@@ -27,7 +26,7 @@ export default async function handler(req, res) {
       "tempsCuisson": "XX min",
       "description": "Une description très alléchante et chaleureuse de 2 phrases.",
       "tags": ["Un tag court (ex: Confort, Rapide...)"],
-      "imageFallback": "[ Illustration de la recette générée ]",
+      "imageKeyword": "delicious culinary food photography of [ENGLISH NAME OF DISH], extremely realistic, 4k",
       "ingredients": ["ingrédient 1 avec quantité", "ingrédient 2 avec quantité", "ingrédient 3"],
       "instructions": ["Première étape de préparation", "Deuxième étape", "Dernière étape"]
     }`;
