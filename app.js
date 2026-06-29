@@ -18,18 +18,24 @@ document.addEventListener("DOMContentLoaded", () => {
     const detailContent = document.getElementById("detail-content");
     const btnBack = document.getElementById("btn-back");
 
+    // L'image de secours universelle (une belle table rustique)
+    const fallbackImage = "https://images.unsplash.com/photo-1495195134817-a1a18bc0c8b1?auto=format&fit=crop&w=600&q=80";
+
     function createRecipeCardHtml(recipe) {
         const favBtnClass = recipe.isFavorite ? "recipe-fav-btn active" : "recipe-fav-btn";
         const favIconColor = recipe.isFavorite ? "currentColor" : "none";
         
-        // Création de l'URL de l'image (avec fallback sur le nom si l'IA n'a pas donné de keyword)
-        const imageSearchTerm = recipe.imageKeyword || `delicious food photography of ${recipe.nom}, realistic`;
+        // 1. Nettoyage du nom : on retire l'émoji ✨ pour ne pas casser l'URL
+        const cleanName = recipe.nom.replace(/✨/g, '').trim();
+        
+        // 2. Création de l'URL
+        const imageSearchTerm = recipe.imageKeyword || `delicious food photography of ${cleanName}, realistic`;
         const imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(imageSearchTerm)}?width=600&height=400&nologo=true`;
 
         return `
             <article class="recipe-card" data-id="${recipe.id}">
                 <div class="recipe-image-wrapper">
-                    <img src="${imageUrl}" alt="${recipe.nom}" style="width: 100%; height: 100%; object-fit: cover;">
+                    <img src="${imageUrl}" alt="${cleanName}" onerror="this.onerror=null;this.src='${fallbackImage}';" style="width: 100%; height: 100%; object-fit: cover;">
                     <span class="recipe-badge">${recipe.categorie}</span>
                     <button class="${favBtnClass}" aria-label="Ajouter ou retirer des préférées" data-id="${recipe.id}">
                         <svg width="20" height="20" fill="${favIconColor}" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -91,9 +97,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // Écouteurs pour le bouton Favoris ET le bouton Supprimer
     function attachCardListeners() {
-        // Boutons Favoris
         const favButtons = document.querySelectorAll(".recipe-fav-btn");
         favButtons.forEach(button => {
             button.addEventListener("click", (e) => {
@@ -109,7 +113,6 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         });
 
-        // Boutons Supprimer
         const deleteButtons = document.querySelectorAll(".recipe-delete-btn");
         deleteButtons.forEach(button => {
             button.addEventListener("click", (e) => {
@@ -208,12 +211,16 @@ document.addEventListener("DOMContentLoaded", () => {
             instructionsHTML = recipe.instructions.map((inst, index) => `<p style="margin-bottom: 1rem;"><strong>Étape ${index + 1} :</strong> ${inst}</p>`).join('');
         }
 
-        const imageSearchTerm = recipe.imageKeyword || `delicious food photography of ${recipe.nom}, realistic`;
+        const cleanName = recipe.nom.replace(/✨/g, '').trim();
+        const imageSearchTerm = recipe.imageKeyword || `delicious food photography of ${cleanName}, realistic`;
         const imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(imageSearchTerm)}?width=1200&height=400&nologo=true`;
+        
+        // Image de secours version large
+        const fallbackImageLarge = "https://images.unsplash.com/photo-1495195134817-a1a18bc0c8b1?auto=format&fit=crop&w=1200&q=80";
 
         detailContent.innerHTML = `
             <div style="height: 350px; margin: -3rem -3rem 2rem -3rem; overflow: hidden; border-bottom: 4px solid var(--color-cuivre); position: relative;">
-                <img src="${imageUrl}" alt="${recipe.nom}" style="width: 100%; height: 100%; object-fit: cover;">
+                <img src="${imageUrl}" alt="${cleanName}" onerror="this.onerror=null;this.src='${fallbackImageLarge}';" style="width: 100%; height: 100%; object-fit: cover;">
             </div>
             
             <span class="recipe-badge" style="position: relative; inset: auto; display: inline-block; margin-bottom: 1rem; border: 1px solid var(--color-sauge);">${recipe.categorie}</span>
