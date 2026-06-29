@@ -18,20 +18,16 @@ document.addEventListener("DOMContentLoaded", () => {
     const detailContent = document.getElementById("detail-content");
     const btnBack = document.getElementById("btn-back");
 
-    // L'image de secours universelle (une belle table rustique)
     const fallbackImage = "https://images.unsplash.com/photo-1495195134817-a1a18bc0c8b1?auto=format&fit=crop&w=600&q=80";
 
+    // 1. GÉNÉRATION DES CARTES (Avec le bouton Corbeille)
     function createRecipeCardHtml(recipe) {
         const favBtnClass = recipe.isFavorite ? "recipe-fav-btn active" : "recipe-fav-btn";
         const favIconColor = recipe.isFavorite ? "currentColor" : "none";
         
-        // 1. Nettoyage extrême : on enlève émoji ET guillemets pour ne pas casser le HTML
         const cleanName = recipe.nom.replace(/✨/g, '').replace(/["']/g, '').trim();
-        
-        // 2. Création de l'URL sécurisée
         let searchPrompt = recipe.imageKeyword;
         if (!searchPrompt) {
-            // Si c'est une vieille recette sans mot clé court, on coupe le nom s'il est trop long
             let shortName = cleanName.length > 40 ? cleanName.substring(0, 40) + "..." : cleanName;
             searchPrompt = `delicious food photography of ${shortName}, realistic`;
         }
@@ -42,7 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 <div class="recipe-image-wrapper">
                     <img src="${imageUrl}" alt="${cleanName}" onerror="this.onerror=null;this.src='${fallbackImage}';" style="width: 100%; height: 100%; object-fit: cover;">
                     <span class="recipe-badge">${recipe.categorie}</span>
-                    <button class="${favBtnClass}" aria-label="Ajouter ou retirer des préférées" data-id="${recipe.id}">
+                    <button class="${favBtnClass}" aria-label="Ajouter aux préférées" data-id="${recipe.id}">
                         <svg width="20" height="20" fill="${favIconColor}" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
                         </svg>
@@ -53,14 +49,14 @@ document.addEventListener("DOMContentLoaded", () => {
                     <h3 class="recipe-name">${recipe.nom}</h3>
                     <p class="recipe-desc">${recipe.description}</p>
                     <div class="recipe-footer">
-                        <span class="recipe-tag">${recipe.tags[0]}</span>
+                        <span class="recipe-tag">${recipe.tags && recipe.tags.length > 0 ? recipe.tags[0] : "Magique"}</span>
                         <div class="action-buttons">
                             <button class="recipe-delete-btn" aria-label="Supprimer la recette" data-id="${recipe.id}" title="Supprimer">
                                 <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                 </svg>
                             </button>
-                            <button class="btn btn-secondary btn-detail" style="padding: 0.4rem 1rem; font-size: 0.8rem;">Voir</button>
+                            <button class="btn btn-secondary btn-detail" style="padding: 0.4rem 1rem; font-size: 0.8rem;">Ouvrir</button>
                         </div>
                     </div>
                 </div>
@@ -68,6 +64,7 @@ document.addEventListener("DOMContentLoaded", () => {
         `;
     }
 
+    // 2. MISE À JOUR DE L'AFFICHAGE
     function updateAppDisplay() {
         const activeFilterButton = filterContainer.querySelector(".tab-button.active");
         const selectedOrigine = activeFilterButton ? activeFilterButton.getAttribute("data-origine") : "toutes";
@@ -76,7 +73,7 @@ document.addEventListener("DOMContentLoaded", () => {
             ? magicRecipes : magicRecipes.filter(recipe => recipe.origine === selectedOrigine);
 
         if (filteredRecipes.length === 0) {
-            catalogGrid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: var(--color-text-light); font-style: italic; padding: 2rem;">Aucune recette dans cette catégorie pour le moment.</p>`;
+            catalogGrid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: var(--color-text-light); font-style: italic; padding: 2rem;">Aucune recette par ici.</p>`;
         } else {
             catalogGrid.innerHTML = filteredRecipes.map(recipe => createRecipeCardHtml(recipe)).join("");
         }
@@ -86,7 +83,7 @@ document.addEventListener("DOMContentLoaded", () => {
         favCountElement.textContent = `${count} recette${count > 1 ? 's' : ''} enregistrée${count > 1 ? 's' : ''}`;
 
         if (favoriteRecipes.length === 0) {
-            favoritesGrid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: var(--color-text-light); font-style: italic; padding: 2rem;">Vous n'avez pas encore de recettes préférées.</p>`;
+            favoritesGrid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: var(--color-text-light); font-style: italic; padding: 2rem;">Le carnet est encore vide.</p>`;
         } else {
             favoritesGrid.innerHTML = favoriteRecipes.map(recipe => createRecipeCardHtml(recipe)).join("");
         }
@@ -94,14 +91,7 @@ document.addEventListener("DOMContentLoaded", () => {
         attachCardListeners();
     }
 
-    filterContainer.addEventListener("click", (e) => {
-        if (e.target.classList.contains("tab-button")) {
-            filterContainer.querySelector(".tab-button.active").classList.remove("active");
-            e.target.classList.add("active");
-            updateAppDisplay();
-        }
-    });
-
+    // 3. ÉCOUTEURS D'ÉVÉNEMENTS (Supprimer & Favoris)
     function attachCardListeners() {
         const favButtons = document.querySelectorAll(".recipe-fav-btn");
         favButtons.forEach(button => {
@@ -109,7 +99,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 const btn = e.target.closest(".recipe-fav-btn");
                 const recipeId = parseInt(btn.getAttribute("data-id"), 10);
                 const recipe = magicRecipes.find(r => r.id === recipeId);
-                
                 if (recipe) {
                     recipe.isFavorite = !recipe.isFavorite;
                     saveDatabase(); 
@@ -118,13 +107,14 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         });
 
+        // Activation du bouton Supprimer (sur les cartes)
         const deleteButtons = document.querySelectorAll(".recipe-delete-btn");
         deleteButtons.forEach(button => {
             button.addEventListener("click", (e) => {
                 const btn = e.target.closest(".recipe-delete-btn");
                 const recipeId = parseInt(btn.getAttribute("data-id"), 10);
                 
-                if (confirm("Voulez-vous vraiment jeter cette recette aux oubliettes ?")) {
+                if (confirm("Effacer cette page du carnet ?")) {
                     const index = magicRecipes.findIndex(r => r.id === recipeId);
                     if (index !== -1) {
                         magicRecipes.splice(index, 1);
@@ -135,6 +125,15 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         });
     }
+
+    // Navigation des onglets
+    filterContainer.addEventListener("click", (e) => {
+        if (e.target.classList.contains("tab-button")) {
+            filterContainer.querySelector(".tab-button.active").classList.remove("active");
+            e.target.classList.add("active");
+            updateAppDisplay();
+        }
+    });
 
     navLinks.forEach(link => {
         link.addEventListener("click", (e) => {
@@ -156,15 +155,15 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
+    // 4. GÉNÉRATEUR IA
     generatorForm.addEventListener("submit", async (e) => {
         e.preventDefault();
-
         const titleValue = titleInput.value.trim();
         const envieValue = envieInput.value.trim();
         if (!titleValue) return;
 
         const originalBtnText = submitBtn.textContent;
-        submitBtn.textContent = "L'alchimiste compose votre recette...";
+        submitBtn.textContent = "Écriture de la recette en cours...";
         submitBtn.disabled = true;
         submitBtn.style.opacity = "0.7";
 
@@ -195,6 +194,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
+    // 5. AFFICHAGE DES DÉTAILS
     document.addEventListener("click", (e) => {
         const btnDetail = e.target.closest(".btn-detail");
         if (btnDetail) {
@@ -202,6 +202,14 @@ document.addEventListener("DOMContentLoaded", () => {
             const recipeId = parseInt(article.getAttribute("data-id"), 10);
             const recipe = magicRecipes.find(r => r.id === recipeId);
             if (recipe) afficherDetails(recipe);
+        }
+
+        // Écouteur pour le bouton d'édition dans la vue détail
+        const btnEdit = e.target.closest(".btn-edit-recipe");
+        if (btnEdit) {
+            const recipeId = parseInt(btnEdit.getAttribute("data-id"), 10);
+            const recipe = magicRecipes.find(r => r.id === recipeId);
+            if (recipe) afficherFormulaireEdition(recipe);
         }
     });
 
@@ -216,36 +224,31 @@ document.addEventListener("DOMContentLoaded", () => {
             instructionsHTML = recipe.instructions.map((inst, index) => `<p style="margin-bottom: 1rem;"><strong>Étape ${index + 1} :</strong> ${inst}</p>`).join('');
         }
 
-        // 1. Nettoyage extrême
         const cleanName = recipe.nom.replace(/✨/g, '').replace(/["']/g, '').trim();
-        
-        // 2. Création de l'URL sécurisée
-        let searchPrompt = recipe.imageKeyword;
-        if (!searchPrompt) {
-            let shortName = cleanName.length > 40 ? cleanName.substring(0, 40) + "..." : cleanName;
-            searchPrompt = `delicious food photography of ${shortName}, realistic`;
-        }
-        const imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(searchPrompt)}?width=1200&height=400&nologo=true`;
-        
-        // Image de secours version large
+        const imageSearchTerm = recipe.imageKeyword || `delicious food photography of ${cleanName}, realistic`;
+        const imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(imageSearchTerm)}?width=1200&height=400&nologo=true`;
         const fallbackImageLarge = "https://images.unsplash.com/photo-1495195134817-a1a18bc0c8b1?auto=format&fit=crop&w=1200&q=80";
 
         detailContent.innerHTML = `
+            <div style="position: absolute; top: 1.5rem; right: 1.5rem; z-index: 10;">
+                <button class="btn btn-primary btn-edit-recipe" data-id="${recipe.id}">✏️ Modifier</button>
+            </div>
+
             <div style="height: 350px; margin: -3rem -3rem 2rem -3rem; overflow: hidden; border-bottom: 4px solid var(--color-cuivre); position: relative;">
                 <img src="${imageUrl}" alt="${cleanName}" onerror="this.onerror=null;this.src='${fallbackImageLarge}';" style="width: 100%; height: 100%; object-fit: cover;">
             </div>
             
-            <span class="recipe-badge" style="position: relative; inset: auto; display: inline-block; margin-bottom: 1rem; border: 1px solid var(--color-sauge);">${recipe.categorie}</span>
+            <span class="recipe-badge" style="position: relative; inset: auto; display: inline-block; margin-bottom: 1rem; border: 1px solid var(--color-accent);">${recipe.categorie}</span>
             <h2 class="section-title" style="border: none; margin-bottom: 0.5rem; padding: 0; font-size: 2.5rem;">${recipe.nom}</h2>
             <div class="recipe-meta" style="font-size: 1rem;">${recipe.origine} • Temps estimé : ${recipe.tempsCuisson}</div>
             
             <div class="detail-grid">
                 <div class="detail-ingredients">
-                    <h3 style="font-family: var(--font-display); color: var(--color-cuivre); margin-bottom: 1rem;">Ingrédients</h3>
+                    <h3 style="font-family: var(--font-display); color: var(--color-accent); margin-bottom: 1rem; font-size: 2rem;">Ingrédients</h3>
                     <ul>${ingredientsHTML}</ul>
                 </div>
                 <div class="detail-instructions">
-                    <h3 style="font-family: var(--font-display); color: var(--color-cuivre); margin-bottom: 1rem;">Préparation</h3>
+                    <h3 style="font-family: var(--font-display); color: var(--color-accent); margin-bottom: 1rem; font-size: 2rem;">Préparation</h3>
                     ${instructionsHTML}
                 </div>
             </div>
@@ -255,6 +258,67 @@ document.addEventListener("DOMContentLoaded", () => {
         guideView.style.display = "none";
         detailView.style.display = "block";
         window.scrollTo(0, 0);
+    }
+
+    // 6. FORMULAIRE DE MODIFICATION MANUELLE
+    function afficherFormulaireEdition(recipe) {
+        // On transforme les tableaux en texte pour pouvoir les éditer dans une zone de texte
+        const ingredientsText = recipe.ingredients ? recipe.ingredients.join('\n') : '';
+        const instructionsText = recipe.instructions ? recipe.instructions.join('\n') : '';
+
+        detailContent.innerHTML = `
+            <div style="padding: 2rem 0;">
+                <h2 class="section-title" style="font-size: 2.5rem; margin-bottom: 2rem;">✏️ Raturer le carnet</h2>
+                <form id="edit-recipe-form">
+                    <div class="form-group">
+                        <label>Nom de la recette</label>
+                        <input type="text" id="edit-nom" class="form-control" value="${recipe.nom}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Description (L'intro de la recette)</label>
+                        <textarea id="edit-desc" class="form-control" rows="2" required>${recipe.description}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Ingrédients (1 ingrédient par ligne)</label>
+                        <textarea id="edit-ingredients" class="form-control" rows="6">${ingredientsText}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Préparation (1 étape par ligne)</label>
+                        <textarea id="edit-instructions" class="form-control" rows="8">${instructionsText}</textarea>
+                    </div>
+                    <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                        <button type="submit" class="btn btn-primary">💾 Sauvegarder</button>
+                        <button type="button" class="btn btn-secondary" id="btn-cancel-edit">Annuler</button>
+                    </div>
+                </form>
+            </div>
+        `;
+
+        // Bouton annuler
+        document.getElementById("btn-cancel-edit").addEventListener("click", () => {
+            afficherDetails(recipe);
+        });
+
+        // Enregistrement des modifications
+        document.getElementById("edit-recipe-form").addEventListener("submit", (e) => {
+            e.preventDefault();
+            
+            // On récupère les nouvelles valeurs
+            recipe.nom = document.getElementById("edit-nom").value.trim();
+            recipe.description = document.getElementById("edit-desc").value.trim();
+            
+            // On retransforme le texte en tableau pour la base de données
+            const ingRaw = document.getElementById("edit-ingredients").value;
+            recipe.ingredients = ingRaw.split('\n').map(i => i.trim()).filter(i => i !== '');
+
+            const instRaw = document.getElementById("edit-instructions").value;
+            recipe.instructions = instRaw.split('\n').map(i => i.trim()).filter(i => i !== '');
+
+            // On sauvegarde et on rafraîchit l'interface
+            saveDatabase();
+            updateAppDisplay();
+            afficherDetails(recipe); // On retourne sur la vue de la recette mise à jour
+        });
     }
 
     btnBack.addEventListener("click", () => {
